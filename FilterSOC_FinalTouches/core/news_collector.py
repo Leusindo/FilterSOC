@@ -12,9 +12,7 @@ from .config import Config
 
 
 class NewsCollector:
-    """
-    Automatický zber nových titulkov z RSS feedov a webových stránok
-    """
+
 
     def __init__(self, classifier=None):
         self.config = Config()

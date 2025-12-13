@@ -178,7 +178,6 @@ class NewsClassifier:
             features = self.feature_extractor.transform([cleaned_text])
         except Exception as e:
             self.logger.error(f"Chyba pri feature extraction: {e}")
-            # Fallback na základnú klasifikáciu podľa kľúčových slov
             return self._fallback_prediction(text)
 
         prediction = self.model_trainer.model.predict(features)[0]

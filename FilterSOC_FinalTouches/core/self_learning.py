@@ -37,7 +37,7 @@ class SelfLearningSystem:
                 missing_columns = [col for col in required_columns if col not in learning_data.columns]
 
                 if missing_columns:
-                    self.logger.info(f"🔧 Pridávam chýbajúce stĺpce: {missing_columns}")
+                    self.logger.info(f"Pridávam chýbajúce stĺpce: {missing_columns}")
                     for col in missing_columns:
                         if col == 'verified':
                             learning_data[col] = False
@@ -49,10 +49,10 @@ class SelfLearningSystem:
                             learning_data[col] = ''
 
                     learning_data.to_csv(self.learning_file, index=False)
-                    self.logger.info("✅ Learning data inicializované s potrebnými stĺpcami")
+                    self.logger.info("Learning data inicializované s potrebnými stĺpcami")
 
         except Exception as e:
-            self.logger.info("📝 Vytváram nový learning data súbor")
+            self.logger.info("Vytváram nový learning data súbor")
             empty_df = pd.DataFrame(columns=['text', 'category', 'confidence', 'timestamp', 'verified', 'processed'])
             empty_df.to_csv(self.learning_file, index=False)
 
@@ -65,7 +65,7 @@ class SelfLearningSystem:
             if confidence > self.confidence_threshold:
                 self._add_to_learning_buffer(text, category, confidence)
                 added_to_learning = True
-                self.logger.info(f"🧠 Pridané do učenia: '{text}' -> {category} ({confidence:.3f})")
+                self.logger.info(f"Pridané do učenia: '{text}' -> {category} ({confidence:.3f})")
 
             return category, probabilities, added_to_learning
 
@@ -89,7 +89,7 @@ class SelfLearningSystem:
             self._save_learning_data()
 
         if len(self.learning_buffer) >= self.buffer_size:
-            self.logger.info(f"🔄 Buffer plný ({len(self.learning_buffer)} príkladov), navrhujem pretrénovanie")
+            self.logger.info(f"Buffer plný ({len(self.learning_buffer)} príkladov), navrhujem pretrénovanie")
 
     def _save_learning_data(self):
         try:
@@ -108,9 +108,9 @@ class SelfLearningSystem:
             combined_df = combined_df.drop_duplicates(subset=['text'])
 
             combined_df.to_csv(self.learning_file, index=False)
-            combined_df.to_csv(self.backup_file, index=False)  # Záloha
+            combined_df.to_csv(self.backup_file, index=False)
 
-            self.logger.info(f"💾 Uložených {len(new_df)} self-learning príkladov")
+            self.logger.info(f"Uložených {len(new_df)} self-learning príkladov")
             self.learning_buffer.clear()
 
         except Exception as e:
@@ -132,7 +132,7 @@ class SelfLearningSystem:
                     else:
                         df[col] = ''
 
-            self.logger.info(f"📖 Načítaných {len(df)} self-learning príkladov")
+            self.logger.info(f"Načítaných {len(df)} self-learning príkladov")
             return df
 
         except FileNotFoundError:
@@ -147,24 +147,24 @@ class SelfLearningSystem:
     def retrain_with_learning_data(self) -> bool:
 
         try:
-            self.logger.info("🔄 Začínam pretrénovanie s self-learning dátami...")
+            self.logger.info("Začínam pretrénovanie s self-learning dátami...")
 
             original_data = pd.read_csv(self.config.DATA_PATH)
             learning_data = self.load_learning_data()
 
             if learning_data.empty:
-                self.logger.info("ℹ️ Žiadne learning dáta pre pretrénovanie")
+                self.logger.info("Žiadne learning dáta pre pretrénovanie")
                 return False
 
-            verified_mask = pd.Series([True] * len(learning_data))  # Všetky príklady!
+            verified_mask = pd.Series([True] * len(learning_data))
 
             verified_data = learning_data[verified_mask]
 
             if len(verified_data) == 0:
-                self.logger.info("ℹ️ Žiadne overené dáta pre pretrénovanie")
+                self.logger.info("Žiadne overené dáta pre pretrénovanie")
                 return False
 
-            self.logger.info(f"📊 Pretrénujem s {len(verified_data)} overenými príkladmi")
+            self.logger.info(f"Pretrénujem s {len(verified_data)} overenými príkladmi")
 
             new_data = pd.DataFrame({
                 'title': verified_data['text'],
@@ -179,14 +179,14 @@ class SelfLearningSystem:
 
             results = self.classifier.train(enable_augmentation=False)
 
-            self.logger.info(f"✅ Pretrénovanie úspešné! Nová presnosť: {results['accuracy']:.3f}")
+            self.logger.info(f"Pretrénovanie úspešné! Nová presnosť: {results['accuracy']:.3f}")
 
             self._mark_processed_examples(verified_data)
 
             return True
 
         except Exception as e:
-            self.logger.error(f"❌ Chyba pri pretrénovaní: {e}")
+            self.logger.error(f"Chyba pri pretrénovaní: {e}")
             self._restore_backup_models()
             return False
 
@@ -201,7 +201,7 @@ class SelfLearningSystem:
                     filename = os.path.basename(file_path)
                     shutil.copy2(file_path, f"data/backup_models/{filename}")
 
-            self.logger.info("💾 Aktuálne modely zazálohované")
+            self.logger.info("Aktuálne modely zazálohované")
         except Exception as e:
             self.logger.error(f"Chyba pri zálohovaní modelov: {e}")
 
@@ -216,7 +216,7 @@ class SelfLearningSystem:
                     filename = os.path.basename(file_path)
                     shutil.copy2(file_path, os.path.join(self.config.MODELS_DIR, filename))
 
-            self.logger.info("🔄 Modely obnovené zo zálohy")
+            self.logger.info("Modely obnovené zo zálohy")
             self.classifier.load_models()
         except Exception as e:
             self.logger.error(f"Chyba pri obnove modelov: {e}")
@@ -235,7 +235,7 @@ class SelfLearningSystem:
             learning_data['processed'] = learning_data['text'].isin(processed_texts)
 
             learning_data.to_csv(self.learning_file, index=False)
-            self.logger.info(f"🏷️ Označených {len(processed_texts)} príkladov ako spracovaných")
+            self.logger.info(f"Označených {len(processed_texts)} príkladov ako spracovaných")
 
         except Exception as e:
             self.logger.error(f"Chyba pri označovaní príkladov: {e}")
@@ -259,7 +259,7 @@ class SelfLearningSystem:
                     stats['verified_examples'] = 0
 
                 if 'confidence' in learning_data.columns:
-                    stats['high_confidence_examples'] = len(learning_data[learning_data['confidence'] > 0.9])
+                    stats['high_confidence_examples'] = len(learning_data[learning_data['confidence'] > 0.85])
                 else:
                     stats['high_confidence_examples'] = 0
 
@@ -294,7 +294,7 @@ class SelfLearningSystem:
             self.learning_buffer.append(learning_example)
             self._save_learning_data()
 
-            self.logger.info(f"✅ Manuálne overené: '{text}' -> {correct_category}")
+            self.logger.info(f"Manuálne overené: '{text}' -> {correct_category}")
 
         except Exception as e:
             self.logger.error(f"Chyba pri manuálnom overení: {e}")
