@@ -12,13 +12,13 @@ from core.news_collector import NewsCollector
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 
-class FilterSOCApp:
+class MediaLensApp:
     def __init__(self):
         ctk.set_appearance_mode("Dark")
         ctk.set_default_color_theme("blue")
 
         self.root = ctk.CTk()
-        self.root.title("FilterSOC Alpha4 - Detekcia dezinformácií + Self-Learning")
+        self.root.title("MediaLens - Detekcia dezinformácií + Self-Learning")
         self.root.geometry("1000x700")
 
         self.classifier = NewsClassifier()
@@ -39,7 +39,7 @@ class FilterSOCApp:
 
         title_label = ctk.CTkLabel(
             main_frame,
-            text="FilterSOC Alpha4 + Self-Learning",
+            text="MediaLens + Self-Learning",
             font=ctk.CTkFont(size=20, weight="bold")
         )
         title_label.pack(pady=20)
@@ -464,5 +464,5 @@ class FilterSOCApp:
 
 
 if __name__ == "__main__":
-    app = FilterSOCApp()
+    app = MediaLensApp()
     app.run()
