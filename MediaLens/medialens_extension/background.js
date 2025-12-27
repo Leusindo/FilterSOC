@@ -13,7 +13,7 @@ chrome.contextMenus.onClicked.addListener((info) => {
   if (!selectedText) {
     chrome.notifications.create({
       type: "basic",
-      iconUrl: "icon.png",
+      iconUrl: "icon.svg",
       title: "MediaLens – chyba",
       message: "Najprv označte text, ktorý chcete analyzovať."
     });
@@ -39,7 +39,7 @@ chrome.contextMenus.onClicked.addListener((info) => {
 
       chrome.notifications.create({
         type: "basic",
-        iconUrl: "icon.png",
+        iconUrl: "icon.svg",
         title,
         message
       });
@@ -47,7 +47,7 @@ chrome.contextMenus.onClicked.addListener((info) => {
     .catch(err => {
       chrome.notifications.create({
         type: "basic",
-        iconUrl: "icon.png",
+        iconUrl: "icon.svg",
         title: "MediaLens – chyba",
         message: "Nepodarilo sa spojiť so službou na 127.0.0.1:5000"
       });
