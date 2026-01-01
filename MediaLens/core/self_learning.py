@@ -201,7 +201,7 @@ class SelfLearningSystem:
                     filename = os.path.basename(file_path)
                     shutil.copy2(file_path, f"data/backup_models/{filename}")
 
-            self.logger.info("Aktuálne modely zazálohované")
+            self.logger.info("Aktuálne modely zálohované")
         except Exception as e:
             self.logger.error(f"Chyba pri zálohovaní modelov: {e}")
 

@@ -5,6 +5,7 @@ from tkinter import ttk, messagebox
 import logging
 import sys
 import os
+from PIL import Image, ImageTk
 from core.classifier import NewsClassifier
 from core.self_learning import SelfLearningSystem
 from core.news_collector import NewsCollector
@@ -14,12 +15,14 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 class MediaLensApp:
     def __init__(self):
+        icon_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "icon.ico")
         ctk.set_appearance_mode("Dark")
         ctk.set_default_color_theme("blue")
 
         self.root = ctk.CTk()
         self.root.title("MediaLens - Detekcia dezinformácií + Self-Learning")
         self.root.geometry("1000x700")
+        self.root.wm_iconbitmap(icon_path)
 
         self.classifier = NewsClassifier()
         self.self_learning = None
@@ -199,7 +202,7 @@ class MediaLensApp:
             self.classifier.load_models()
             self.models_loaded = True
 
-            self.self_learning = SelfLearningSystem(self.classifier, aggressive_learning=True)
+            self.self_learning = SelfLearningSystem(self.classifier, aggressive_learning=False)
             self.news_collector = NewsCollector(self.classifier)
 
             self.progress.set(1.0)
