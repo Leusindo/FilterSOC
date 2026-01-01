@@ -33,14 +33,14 @@ class MediaLensApp:
         self.setup_logging()
 
         self.category_display_names = {
-            "clickbait": "clickbait",
-            "conspiracy": "konšpiračné",
-            "false_news": "falošné správy",
-            "propaganda": "propaganda",
-            "satire": "satira",
-            "misleading": "zavádzajúce",
-            "biased": "tendenčné",
-            "legitimate": "dôveryhodné",
+            "clickbait": "Clickbait",
+            "conspiracy": "Konšpiračné",
+            "false_news": "Falošné správy",
+            "propaganda": "Propaganda",
+            "satire": "Satira",
+            "misleading": "Zavádzajúce",
+            "biased": "Zaujaté",
+            "legitimate": "Dôveryhodné",
         }
 
     def setup_logging(self):

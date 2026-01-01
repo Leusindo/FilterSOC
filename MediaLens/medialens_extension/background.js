@@ -11,14 +11,14 @@ chrome.contextMenus.onClicked.addListener((info) => {
 
   const selectedText = (info.selectionText || "").trim();
   const slovakLabels = {
-    clickbait: "klikbait",
-    conspiracy: "konšpirácia",
-    false_news: "falošné správy",
-    propaganda: "propaganda",
-    satire: "satira",
-    misleading: "zavádzajúce",
-    biased: "zaujaté",
-    legitimate: "dôveryhodné"
+    clickbait: "Clikbait",
+    conspiracy: "Konšpirácia",
+    false_news: "Falošné správy",
+    propaganda: "Propaganda",
+    satire: "Satira",
+    misleading: "Zavádzajúce",
+    biased: "Zaujaté",
+    legitimate: "Dôveryhodné"
   };
   if (!selectedText) {
     chrome.notifications.create({
