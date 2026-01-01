@@ -32,6 +32,17 @@ class MediaLensApp:
         self.setup_ui()
         self.setup_logging()
 
+        self.category_display_names = {
+            "clickbait": "clickbait",
+            "conspiracy": "konšpiračné",
+            "false_news": "falošné správy",
+            "propaganda": "propaganda",
+            "satire": "satira",
+            "misleading": "zavádzajúce",
+            "biased": "tendenčné",
+            "legitimate": "dôveryhodné",
+        }
+
     def setup_logging(self):
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
@@ -217,6 +228,13 @@ class MediaLensApp:
         finally:
             self.progress.set(0)
 
+    def _get_display_category(self, category: str) -> str:
+        return self.category_display_names.get(category, category)
+
+    @staticmethod
+    def _sorted_probabilities(probabilities):
+        return sorted(probabilities.items(), key=lambda item: item[1], reverse=True)
+
     def classify_with_learning(self):
         if not self.models_loaded:
             messagebox.showwarning("Varovanie", "Najprv načítajte modely!")
@@ -236,11 +254,11 @@ class MediaLensApp:
             category, probabilities, added_to_learning = self.self_learning.predict_with_learning(text)
 
             result_text = f"Titulok: {text}\n\n"
-            result_text += f"Predpovedaná kategória: {category}\n"
+            result_text += f"Predpovedaná kategória: {self._get_display_category(category)}\n"
             result_text += f"Pridané do učenia: {'ÁNO' if added_to_learning else 'NIE'}\n\n"
             result_text += "Pravdepodobnosti:\n"
 
-            for cat, prob in probabilities.items():
+            for cat, prob in self._sorted_probabilities(probabilities):
                 result_text += f"  {cat}: {prob:.4f}\n"
 
             if added_to_learning:
@@ -374,8 +392,9 @@ class MediaLensApp:
             if classified_items:
                 news_text = "AUTOMATICKY KLASIFIKOVANÉ TITULKY:\n\n"
                 for i, item in enumerate(classified_items, 1):
+                    display_category = self._get_display_category(item['predicted_category'])
                     news_text += f"{i}. {item['title']}\n"
-                    news_text += f"   Kategória: {item['predicted_category']} (istota: {item['confidence']:.3f})\n"
+                    news_text += f"   Kategória: {display_category} (istota: {item['confidence']:.3f})\n"
                     news_text += f"   Učenie: {'ÁNO' if item['added_to_learning'] else 'NIE'}\n"
                     news_text += f"   Zdroj: {item['source']}\n\n"
 
@@ -439,10 +458,10 @@ class MediaLensApp:
             predicted_label, probabilities = self.classifier.predict(text)
 
             result_text = f"Titulok: {text}\n\n"
-            result_text += f"Predpovedaná kategória: {predicted_label}\n\n"
+            result_text += f"Predpovedaná kategória: {self._get_display_category(predicted_label)}\n\n"
             result_text += "Pravdepodobnosti:\n"
 
-            for category, prob in probabilities.items():
+            for category, prob in self._sorted_probabilities(probabilities):
                 result_text += f"  {category}: {prob:.4f}\n"
 
             self.results_text.delete("1.0", "end")
