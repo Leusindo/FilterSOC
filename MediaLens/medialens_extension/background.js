@@ -10,6 +10,16 @@ chrome.contextMenus.onClicked.addListener((info) => {
   if (info.menuItemId !== "analyzeHeadline") return;
 
   const selectedText = (info.selectionText || "").trim();
+  const slovakLabels = {
+    clickbait: "klikbait",
+    conspiracy: "konšpirácia",
+    false_news: "falošné správy",
+    propaganda: "propaganda",
+    satire: "satira",
+    misleading: "zavádzajúce",
+    biased: "zaujaté",
+    legitimate: "dôveryhodné"
+  };
   if (!selectedText) {
     chrome.notifications.create({
       type: "basic",
@@ -33,9 +43,10 @@ chrome.contextMenus.onClicked.addListener((info) => {
     })
     .then(data => {
       const title = data.error ? "MediaLens – chyba" : "MediaLens – výsledok";
+      const label = slovakLabels[data.label] || data.label;
       const message = data.error
         ? String(data.error)
-        : `Kategória: ${data.label}\nIstota: ${(data.confidence * 100).toFixed(1)} %`;
+        : `Kategória: ${label}\nIstota: ${(data.confidence * 100).toFixed(1)} %`;
 
       chrome.notifications.create({
         type: "basic",
