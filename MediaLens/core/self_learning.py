@@ -4,6 +4,7 @@ import numpy as np
 import logging
 import joblib
 import os
+import difflib
 from datetime import datetime
 from typing import List, Dict, Tuple
 from .config import Config
@@ -280,11 +281,27 @@ class SelfLearningSystem:
                 'confidence_threshold': self.confidence_threshold
             }
 
-    def manual_verification(self, text: str, correct_category: str):
+    def manual_verification(self, text: str, correct_category: str) -> bool:
         try:
+            normalized_category = correct_category.strip().lower()
+            if normalized_category not in self.config.CATEGORIES:
+                suggestions = difflib.get_close_matches(
+                    normalized_category,
+                    self.config.CATEGORIES,
+                    n=3,
+                    cutoff=0.6
+                )
+                suggestion_text = f" Možné kategórie: {', '.join(suggestions)}." if suggestions else ""
+                allowed_categories = ", ".join(self.config.CATEGORIES)
+                self.logger.error(
+                    "Neplatná kategória pri manuálnom overení: "
+                    f"'{correct_category}'. Povolené: {allowed_categories}.{suggestion_text}"
+                )
+                return False
+
             learning_example = {
                 'text': text,
-                'category': correct_category,
+                'category': normalized_category,
                 'confidence': 1.0,
                 'timestamp': datetime.now().isoformat(),
                 'verified': True,
@@ -294,7 +311,9 @@ class SelfLearningSystem:
             self.learning_buffer.append(learning_example)
             self._save_learning_data()
 
-            self.logger.info(f"Manuálne overené: '{text}' -> {correct_category}")
+            self.logger.info(f"Manuálne overené: '{text}' -> {normalized_category}")
+            return True
 
         except Exception as e:
             self.logger.error(f"Chyba pri manuálnom overení: {e}")
+            return False
