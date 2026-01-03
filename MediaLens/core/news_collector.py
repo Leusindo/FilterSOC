@@ -123,7 +123,7 @@ class NewsCollector:
         if not title:
             return False
 
-        slovak_chars = ['á', 'ä', 'č', 'ď', 'é', 'í', 'ľ', 'ĺ', 'ň', 'ó', 'ô', 'ř', 'ŕ', 'š', 'ť', 'ú', 'ý', 'ž']
+        slovak_chars = ['á', 'ä', 'č', 'ď', 'é', 'í', 'ľ', 'ĺ', 'ň', 'ó', 'ô', 'ŕ', 'š', 'ť', 'ú', 'ý', 'ž']
 
         slovak_words = [
             'a', 'o', 'v', 's', 'z', 'čo', 'ako', 'kde', 'prečo', 'ktorý', 'ktorá', 'ktoré',
@@ -145,7 +145,7 @@ class NewsCollector:
             news_items = self.fetch_from_rss(limit_per_feed=25)
 
             if not news_items:
-                self.logger.info("ℹNeboli nájdené žiadne nové titulky")
+                self.logger.info("Neboli nájdené žiadne nové titulky")
                 return []
 
             classified_items = []
